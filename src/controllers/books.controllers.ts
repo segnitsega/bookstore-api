@@ -7,7 +7,12 @@ export const getBooks = catchAsync(async (req: Request, res: Response) => {
   const page = parseInt(req.query.page as string) || 1;
   const limit = parseInt(req.query.limit as string) || 10;
   const skip = (page - 1) * limit;
-  console.log("Here is the query strings", req.query);
+  const sortParam = ((req.query.sort as string) || "newest").toLowerCase();
+  const orderBy =
+    sortParam === "oldest"
+      ? ({ createdAt: "asc" } as const)
+      : ({ createdAt: "desc" } as const);
+
   const where: any = {};
 
   if (req.query.featured) {
@@ -37,13 +42,12 @@ export const getBooks = catchAsync(async (req: Request, res: Response) => {
   const [books, totalBooks] = await Promise.all([
     prisma.book.findMany({
       where,
+      orderBy,
       skip,
       take: limit,
     }),
     prisma.book.count({ where }),
   ]);
-
-  if (books.length === 0) throw new ApiError(400, "No books found");
 
   res.status(200).json({
     totalBooks,
@@ -132,18 +136,16 @@ export const getBooksByGenre = catchAsync(
     const limit = parseInt(req.query.limit as string) || 4;
     const skip = (page - 1) * limit;
 
+    const genreWhere = { genre };
     const [books, totalBooks] = await Promise.all([
       prisma.book.findMany({
-        where: {
-          genre,
-        },
+        where: genreWhere,
+        orderBy: { createdAt: "desc" },
         skip,
         take: limit,
       }),
-      prisma.book.count(),
+      prisma.book.count({ where: genreWhere }),
     ]);
-    if (books.length === 0)
-      throw new ApiError(400, "No books found in this genre");
     res.status(200).json({
       totalBooks: totalBooks,
       currentPage: page,
