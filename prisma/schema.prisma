@@ -45,12 +45,14 @@ model Wishlist {
 }
 
 model Order {
-  id        String      @id @default(uuid())
-  userId    String
-  total     Float
-  createdAt DateTime    @default(now())
-  user      User        @relation(fields: [userId], references: [id])
-  orderItem OrderItem[]
+  id              String      @id @default(uuid())
+  userId          String
+  total           Float
+  status          String      @default("pending")
+  stripeSessionId String?     @unique
+  createdAt       DateTime    @default(now())
+  user            User        @relation(fields: [userId], references: [id])
+  orderItem       OrderItem[]
 }
 
 model OrderItem {
@@ -59,7 +61,7 @@ model OrderItem {
   bookId   String
   quantity Int
   price    Float
-  order    Order  @relation(fields: [orderId], references: [id])
+  order    Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
   book     Book   @relation(fields: [bookId], references: [id])
 }
 
