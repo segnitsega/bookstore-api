@@ -1,5 +1,8 @@
 import express from "express";
-import { createCheckoutSession } from "../controllers/payment.controllers";
+import {
+  createCheckoutSession,
+  getOrderBySessionId,
+} from "../controllers/payment.controllers";
 import { verifyToken } from "../utils/verify-token";
 
 const paymentRouter = express.Router();
@@ -9,5 +12,7 @@ paymentRouter.post(
   verifyToken,
   createCheckoutSession
 );
+
+paymentRouter.get("/session/:sessionId", verifyToken, getOrderBySessionId);
 
 export default paymentRouter;
