@@ -1,6 +1,7 @@
 import express from "express";
 import {
   createCheckoutSession,
+  getMyOrders,
   getOrderBySessionId,
 } from "../controllers/payment.controllers";
 import { verifyToken } from "../utils/verify-token";
@@ -13,6 +14,7 @@ paymentRouter.post(
   createCheckoutSession
 );
 
+paymentRouter.get("/orders", verifyToken, getMyOrders);
 paymentRouter.get("/session/:sessionId", verifyToken, getOrderBySessionId);
 
 export default paymentRouter;

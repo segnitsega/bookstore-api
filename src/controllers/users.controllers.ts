@@ -129,6 +129,8 @@ export const getUser = catchAsync(async (req: Request, res: Response) => {
       firstName: true,
       lastName: true,
       role: true,
+      city: true,
+      state: true,
     },
   });
 

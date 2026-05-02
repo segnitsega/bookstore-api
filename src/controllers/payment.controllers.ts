@@ -122,6 +122,26 @@ export const getOrderBySessionId = catchAsync(
   }
 );
 
+/**
+ * List the authenticated user's orders, newest first, including items + book details.
+ */
+export const getMyOrders = catchAsync(
+  async (req: any, res: Response, _next: NextFunction) => {
+    const userId = req.user?.id as string | undefined;
+    if (!userId) throw new ApiError(401, "Unauthorized");
+
+    const orders = await prisma.order.findMany({
+      where: { userId },
+      orderBy: { createdAt: "desc" },
+      include: {
+        orderItem: { include: { book: true } },
+      },
+    });
+
+    res.status(200).json({ orders });
+  }
+);
+
 /* ------------------------- Webhook ------------------------- */
 
 type StripeEvent = ReturnType<
