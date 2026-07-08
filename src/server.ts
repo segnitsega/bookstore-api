@@ -28,6 +28,7 @@ const server = express();
 const allowedOrigins = [
   "http://localhost:5173",
   "https://bookstore-68axbz3r2-segnitsegas-projects.vercel.app",
+  "https://bookstore-app-taupe.vercel.app",
   "http://localhost:3000",
 ];
 
