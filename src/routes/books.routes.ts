@@ -4,6 +4,7 @@ import { verifyToken } from "../utils/verify-token"
 
 export const bookRouter = express.Router()
 
+bookRouter.use(verifyToken)
 bookRouter.get('/', getBooks)
 bookRouter.get('/featured', getFeaturedBooks)
 bookRouter.get('/bestsellers', getBestSellers)
